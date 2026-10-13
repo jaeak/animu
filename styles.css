@@ -1,0 +1,552 @@
+:root {
+  color-scheme: dark;
+  font-family: "DM Sans", sans-serif;
+  background: #11100f;
+  color: #f8f6f3;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  --muted: rgba(245, 240, 234, .57);
+  --soft-white: rgba(255, 250, 244, .89);
+  --accent: #d5a982;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  min-width: 360px;
+  min-height: 100vh;
+  min-height: 100svh;
+  overflow: hidden;
+  background: #11100f;
+}
+
+button, input { font: inherit; }
+button { color: inherit; }
+
+.stage {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  width: 100%;
+  min-height: 100vh;
+  min-height: 100svh;
+  overflow: hidden;
+  background: #11100f;
+}
+
+.opening-video, .cover-backdrop, .visual-shade {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.opening-video { z-index: 0; }
+
+.opening-video {
+  object-fit: cover;
+  object-position: center;
+  opacity: 0;
+  transition: opacity .2s ease;
+}
+
+.opening-video.visible { opacity: 1; }
+
+.cover-backdrop {
+  object-fit: cover;
+  object-position: center;
+  opacity: 0;
+  transition: opacity .2s ease;
+}
+
+.cover-backdrop.visible { opacity: 1; }
+
+.visual-shade {
+  z-index: 1;
+  background: #000;
+  opacity: .42;
+  transition: opacity .2s ease;
+}
+
+.topbar {
+  z-index: 2;
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  display: flex;
+  height: 92px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 clamp(25px, 5.5vw, 82px);
+}
+
+.wordmark {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  color: #fffaf6;
+  font-family: Nunito, "DM Sans", sans-serif;
+  font-size: 21px;
+  font-weight: 800;
+  letter-spacing: -.3px;
+  text-decoration: none;
+}
+
+/* A little line-drawn cat face with blushing cheeks. */
+.brand-mark { display: block; width: 26px; height: 26px; color: #fffaf6; overflow: visible; }
+.brand-mark .cat-outline, .brand-mark .cat-mouth { fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; }
+.brand-mark .cat-outline { stroke-width: 1.7; }
+.brand-mark .cat-mouth { stroke-width: 1.3; }
+.brand-mark .cat-eye { fill: currentColor; }
+.brand-mark .cat-blush { fill: #f6a9bd; opacity: .85; }
+/* On hover the cat blinks. */
+.brand-mark .cat-eye { transform-box: fill-box; transform-origin: center; transition: transform .15s ease; }
+.wordmark:hover .brand-mark .cat-eye { transform: scaleY(.2); }
+
+.topbar-right { display: flex; align-items: center; gap: 19px; }
+
+.connection-pill {
+  display: none;
+  align-items: center;
+  gap: 9px;
+  color: rgba(255, 250, 246, .72);
+  font-size: 11px;
+  letter-spacing: .02em;
+}
+
+.connection-dot, .device-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, .32);
+  transition: background .3s ease, box-shadow .3s ease;
+}
+
+.connection-pill.connected .connection-dot, .device-indicator.connected .device-dot {
+  background: rgba(255, 255, 255, .9);
+  box-shadow: 0 0 10px rgba(255, 255, 255, .45);
+}
+
+.icon-button {
+  display: grid;
+  width: 36px;
+  height: 36px;
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, .13);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, .055);
+  cursor: pointer;
+  transition: background .2s ease, border-color .2s ease;
+}
+
+.icon-button:hover { background: rgba(255, 255, 255, .13); border-color: rgba(255, 255, 255, .25); }
+.icon-button svg { width: 16px; fill: none; stroke: currentColor; stroke-width: 1.35; }
+.fullscreen-button .exit-icon, :fullscreen .fullscreen-button .enter-icon { display: none; }
+:fullscreen .fullscreen-button .exit-icon { display: block; }
+
+.story {
+  display: none;
+  position: absolute;
+  top: 50%;
+  left: clamp(30px, 11vw, 165px);
+  width: min(650px, 64vw);
+  transform: translateY(-59%);
+}
+
+.eyebrow, .dialog-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  color: #d4b398;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: .22em;
+}
+
+.eyebrow-line { width: 24px; height: 1px; background: var(--accent); opacity: .8; }
+
+.story h1 {
+  margin: 23px 0 17px;
+  color: #fffaf6;
+  font-family: Manrope, sans-serif;
+  font-size: clamp(50px, 7.1vw, 100px);
+  font-weight: 500;
+  letter-spacing: -.075em;
+  line-height: .99;
+}
+
+.story h1 em {
+  color: #d8b99e;
+  font-family: Georgia, serif;
+  font-weight: 400;
+  letter-spacing: -.065em;
+}
+
+.story-copy {
+  margin: 0;
+  color: rgba(248, 243, 237, .66);
+  font-size: 13px;
+  line-height: 1.8;
+  letter-spacing: .005em;
+}
+
+.match-credit {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 28px;
+  color: rgba(255, 250, 246, .9);
+  animation: arrive .5s ease both;
+}
+
+.match-credit[hidden] { display: none; }
+.match-icon { color: #d8b99e; font-size: 18px; }
+.match-credit > span:nth-child(2) { display: grid; gap: 4px; }
+.match-caption { color: #c7ad99; font-size: 8px; letter-spacing: .17em; }
+.match-title { font-size: 12px; font-weight: 500; }
+.match-tag {
+  margin-left: 4px;
+  padding: 5px 8px;
+  border: 1px solid rgba(255, 255, 255, .2);
+  border-radius: 3px;
+  color: rgba(255, 250, 246, .75);
+  font-size: 8px;
+  letter-spacing: .1em;
+}
+
+/* A column as wide as the settings button and lined up with the top bar and player's right edge,
+   so the slider sits directly under the settings button. */
+.brightness {
+  z-index: 2;
+  position: absolute;
+  top: 50%;
+  right: clamp(25px, 5.5vw, 82px);
+  width: 36px;
+  height: 230px;
+  transform: translateY(-50%);
+  --slider-length: 200px;
+}
+
+.brightness-icon {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  display: grid;
+  color: rgba(255, 250, 246, .78);
+  place-items: center;
+  transform: translateX(-50%);
+}
+.brightness-icon svg { width: 15px; fill: none; stroke: currentColor; stroke-linecap: round; stroke-width: 1.4; }
+
+input[type="range"] {
+  height: 3px;
+  border: 0;
+  border-radius: 4px;
+  appearance: none;
+  -webkit-appearance: none;
+  background: linear-gradient(to right, #fff var(--fill, 0%), rgba(255, 255, 255, .28) var(--fill, 0%));
+  cursor: pointer;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  width: 9px;
+  height: 9px;
+  border: 0;
+  border-radius: 50%;
+  appearance: none;
+  -webkit-appearance: none;
+  background: #fffaf6;
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, .14);
+}
+
+input[type="range"]::-moz-range-thumb {
+  width: 9px;
+  height: 9px;
+  border: 0;
+  border-radius: 50%;
+  background: #fffaf6;
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, .14);
+}
+
+/* Rotated so the low end is at the bottom: drag up for brighter, down for darker. */
+.brightness input {
+  position: absolute;
+  top: calc(var(--slider-length) / 2);
+  left: 50%;
+  width: var(--slider-length);
+  margin: 0;
+  transform: translate(-50%, -50%) rotate(-90deg);
+}
+
+.player {
+  z-index: 2;
+  position: absolute;
+  right: clamp(25px, 5.5vw, 82px);
+  bottom: 0;
+  left: clamp(25px, 5.5vw, 82px);
+  display: grid;
+  min-height: 119px;
+  grid-template-columns: minmax(220px, 1fr) minmax(290px, 1.18fr) minmax(220px, 1fr);
+  align-items: center;
+  gap: 25px;
+}
+
+.track-info { display: flex; min-width: 0; align-items: center; gap: 13px; }
+.cover-wrap { position: relative; width: 48px; height: 48px; flex: 0 0 48px; overflow: hidden; border-radius: 4px; }
+.cover-wrap img { width: 100%; height: 100%; object-fit: cover; }
+.cover-placeholder { display: grid; width: 100%; height: 100%; place-items: center; background: linear-gradient(145deg, #4b3932, #241f21); }
+.cover-placeholder span { color: rgba(255, 250, 246, .74); font-size: 21px; }
+.track-copy { display: grid; min-width: 0; gap: 5px; }
+.track-name, .track-artist { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.track-name { color: rgba(255, 250, 246, .96); font-size: 11px; font-weight: 600; }
+.track-artist { color: rgba(255, 250, 246, .56); font-size: 10px; }
+.spotify-link { display: grid; margin-left: 3px; color: rgba(255, 250, 246, .65); place-items: center; }
+.spotify-link:hover { color: #80d49c; }
+.spotify-link svg { width: 17px; fill: currentColor; }
+
+.transport { width: min(100%, 395px); justify-self: center; }
+.control-row { display: flex; height: 38px; align-items: center; justify-content: center; gap: 24px; }
+.transport-button, .play-button { display: grid; border: 0; place-items: center; cursor: pointer; transition: opacity .2s ease, transform .2s ease; }
+.transport-button { width: 28px; height: 28px; padding: 4px; background: transparent; color: rgba(255, 250, 246, .76); }
+.transport-button:hover:not(:disabled) { color: white; transform: scale(1.1); }
+.transport-button:disabled, .play-button:disabled { cursor: default; opacity: .35; }
+.transport-button svg { width: 17px; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.8; }
+.play-button { width: 34px; height: 34px; padding: 0; border-radius: 50%; background: #f6f0e9; color: #211d1a; }
+.play-button:hover:not(:disabled) { transform: scale(1.07); background: white; }
+
+/* Glass version of the play button, matching the Disconnect pill. */
+.play-button {
+  border: 1px solid rgba(255, 255, 255, .22);
+  background: rgba(255, 255, 255, .1);
+  backdrop-filter: blur(14px) saturate(1.2);
+  -webkit-backdrop-filter: blur(14px) saturate(1.2);
+  color: rgba(255, 250, 246, .95);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, .2), inset 0 1px 0 rgba(255, 255, 255, .1);
+  transition: opacity .2s ease, transform .2s ease, background .2s ease, border-color .2s ease;
+}
+.play-button svg { filter: drop-shadow(0 1px 2px rgba(0, 0, 0, .4)); }
+.play-button:hover:not(:disabled) { background: rgba(255, 255, 255, .18); border-color: rgba(255, 255, 255, .34); }
+.play-button svg { width: 16px; fill: currentColor; }
+.pause-icon { display: none; }
+.play-button.is-playing .play-icon { display: none; }
+.play-button.is-playing .pause-icon { display: block; }
+
+.timeline { display: grid; grid-template-columns: 34px 1fr 34px; align-items: center; gap: 10px; margin-top: 9px; color: rgba(255, 250, 246, .53); font-size: 9px; font-variant-numeric: tabular-nums; }
+.timeline span:last-child { text-align: right; }
+.timeline input { width: 100%; }
+.timeline input:disabled { cursor: default; opacity: .55; }
+
+.player-end { display: flex; align-items: center; justify-content: flex-end; gap: 24px; }
+.device-indicator { display: flex; align-items: center; gap: 8px; color: rgba(255, 250, 246, .55); font-size: 9px; white-space: nowrap; }
+.device-indicator.connected .device-dot { background: #78c699; box-shadow: 0 0 10px rgba(120, 198, 153, .45); }
+.connect-button, .primary-button {
+  border: 0;
+  border-radius: 3px;
+  background: #f0e7dc;
+  color: #211d1a;
+  cursor: pointer;
+  font-size: 10px;
+  font-weight: 700;
+  transition: background .2s ease, transform .2s ease;
+}
+.connect-button { padding: 11px 14px; white-space: nowrap; }
+.connect-button span, .primary-button span { margin-left: 8px; font-size: 14px; font-weight: 400; }
+.connect-button:hover, .primary-button:hover { transform: translateY(-1px); background: white; }
+
+/* Glass pill, with the same lettering as the device name next to it. */
+.player-end .connect-button {
+  padding: 9px 15px;
+  border: 1px solid rgba(255, 255, 255, .18);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, .07);
+  backdrop-filter: blur(14px) saturate(1.2);
+  -webkit-backdrop-filter: blur(14px) saturate(1.2);
+  color: rgba(255, 250, 246, .55);
+  font-size: 9px;
+  font-weight: 400;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, .45);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, .18), inset 0 1px 0 rgba(255, 255, 255, .08);
+  transition: background .2s ease, border-color .2s ease, color .2s ease;
+}
+.player-end .connect-button span { margin-left: 6px; font-size: 11px; }
+.player-end .connect-button:hover { transform: none; border-color: rgba(255, 255, 255, .3); background: rgba(255, 255, 255, .14); color: rgba(255, 250, 246, .85); }
+
+/* A faint shadow traced around the controls themselves (text, icons, buttons) so they stay readable on bright scenes.
+   (Not on the player as a whole: a filter there would stop the glass button from blurring what's behind it.) */
+.topbar, .brightness, .track-info, .transport-button, .timeline, .device-indicator {
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, .45)) drop-shadow(0 0 8px rgba(0, 0, 0, .25));
+}
+
+.toast {
+  z-index: 3;
+  position: absolute;
+  bottom: 133px;
+  left: 50%;
+  max-width: min(480px, calc(100vw - 40px));
+  padding: 12px 16px;
+  border: 1px solid rgba(255, 255, 255, .13);
+  border-radius: 5px;
+  background: rgba(21, 19, 19, .88);
+  color: rgba(255, 250, 246, .92);
+  font-size: 11px;
+  line-height: 1.5;
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, 8px);
+  transition: opacity .2s ease, transform .2s ease;
+  backdrop-filter: blur(16px);
+}
+
+.toast.visible { opacity: 1; transform: translate(-50%, 0); }
+
+.settings-dialog {
+  width: min(440px, calc(100vw - 34px));
+  padding: 35px;
+  border: 1px solid rgba(255, 255, 255, .16);
+  border-radius: 8px;
+  /* Frosted glass: the scene shows through, blurred and darkened enough to keep the text readable. */
+  background: rgba(10, 10, 12, .38);
+  backdrop-filter: blur(18px) saturate(1.15);
+  -webkit-backdrop-filter: blur(18px) saturate(1.15);
+  color: #fff;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, .6);
+  box-shadow: 0 25px 100px rgba(0, 0, 0, .48);
+  /* Opening and closing: the box grows out of the button that opened it (its position is set in app.js as
+     --origin-x/--origin-y) and shrinks back into it, with a soft spring. */
+  transform-origin: var(--origin-x, 50%) var(--origin-y, 50%);
+  opacity: 0;
+  transform: scale(.4);
+  transition:
+    opacity .3s ease,
+    transform .5s cubic-bezier(.22, 1.2, .36, 1),
+    overlay .5s allow-discrete,
+    display .5s allow-discrete;
+}
+
+.settings-dialog[open] { opacity: 1; transform: none; }
+
+@starting-style {
+  .settings-dialog[open] { opacity: 0; transform: scale(.4); }
+}
+
+/* Closing is a little quicker, and eases in rather than springing. */
+.settings-dialog:not([open]) {
+  transition:
+    opacity .22s ease,
+    transform .3s cubic-bezier(.55, 0, .75, .2),
+    overlay .3s allow-discrete,
+    display .3s allow-discrete;
+}
+
+.settings-dialog::backdrop {
+  background: rgba(9, 8, 8, 0);
+  backdrop-filter: blur(0);
+  -webkit-backdrop-filter: blur(0);
+  transition: background .35s ease, backdrop-filter .35s ease, -webkit-backdrop-filter .35s ease, overlay .35s allow-discrete, display .35s allow-discrete;
+}
+
+.settings-dialog[open]::backdrop { background: rgba(9, 8, 8, .55); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+
+@starting-style {
+  .settings-dialog[open]::backdrop { background: rgba(9, 8, 8, 0); backdrop-filter: blur(0); -webkit-backdrop-filter: blur(0); }
+}
+.dialog-close { position: absolute; top: 16px; right: 16px; font-size: 20px; }
+.dialog-eyebrow { color: rgba(255, 255, 255, .7); font-size: 8px; }
+/* Glass instead of a coloured accent, like the play and Disconnect buttons. */
+.settings-dialog .primary-button { border: 1px solid rgba(255, 255, 255, .3); border-radius: 3px; background: rgba(255, 255, 255, .16); color: #fff; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .14); }
+.settings-dialog .primary-button:hover { border-color: rgba(255, 255, 255, .45); background: rgba(255, 255, 255, .26); }
+.settings-dialog h2 { margin: 17px 0 9px; font-family: Manrope, sans-serif; font-size: 26px; font-weight: 500; letter-spacing: -.05em; }
+.settings-dialog > p { margin: 0 0 23px; color: rgba(255, 255, 255, .9); font-size: 11px; line-height: 1.75; }
+.settings-dialog a { color: #fff; text-decoration-color: rgba(255, 255, 255, .45); text-underline-offset: 3px; }
+.field-label { display: block; margin: 16px 0 8px; color: #fff; font-size: 10px; font-weight: 600; }
+.redirect-label { display: flex; justify-content: space-between; }
+.redirect-label span { color: rgba(255, 255, 255, .75); font-size: 9px; font-weight: 400; }
+.text-input { width: 100%; height: 40px; padding: 0 12px; border: 1px solid rgba(255, 255, 255, .15); border-radius: 3px; outline: none; background: rgba(0, 0, 0, .28); color: #fff; text-shadow: none; font-size: 11px; }
+.text-input:focus { border-color: rgba(255, 255, 255, .5); background: rgba(255, 255, 255, .08); }
+.text-input[readonly] { color: rgba(255, 255, 255, .8); font-size: 10px; }
+.redirect-field { display: flex; gap: 8px; }
+.copy-button, .secondary-button { border: 1px solid rgba(255, 255, 255, .16); border-radius: 3px; background: rgba(0, 0, 0, .2); color: #fff; cursor: pointer; font-size: 10px; }
+.copy-button { padding: 0 12px; }
+.copy-button:hover, .secondary-button:hover { background: rgba(255, 255, 255, .08); }
+.dialog-note { margin: 17px 0 22px !important; color: rgba(255, 255, 255, .72) !important; font-size: 9px !important; }
+.dialog-actions { display: flex; justify-content: flex-end; gap: 9px; }
+.secondary-button, .primary-button { min-height: 38px; padding: 0 13px; font-size: 10px; }
+
+.help-dialog > p:not(.dialog-note) { margin-bottom: 16px; }
+.legal-note { font-style: italic; }
+.help-steps { display: grid; gap: 10px; margin: 0 0 6px; padding-left: 18px; color: rgba(255, 255, 255, .9); font-size: 11px; line-height: 1.65; }
+.help-steps li::marker { color: rgba(255, 255, 255, .6); font-weight: 700; }
+.help-steps strong { color: #fff; font-weight: 600; }
+.help-controls { display: grid; margin: 0; padding: 0; list-style: none; font-size: 11px; }
+.help-controls li { display: flex; justify-content: space-between; gap: 16px; padding: 8px 0; border-bottom: 1px solid rgba(255, 255, 255, .1); }
+.help-controls li span:first-child { color: #fff; }
+.help-controls li span:last-child { color: rgba(255, 255, 255, .72); text-align: right; }
+.help-controls kbd { padding: 1px 6px; border: 1px solid rgba(255, 255, 255, .3); border-radius: 4px; background: rgba(255, 255, 255, .08); font-family: inherit; font-size: 10px; }
+
+/* The timeline and brightness bars get a little thicker on hover and their handle pops out, like the buttons. */
+input[type="range"] { transition: height .18s cubic-bezier(.34, 1.56, .64, 1); }
+input[type="range"]::-webkit-slider-thumb { transition: transform .18s cubic-bezier(.34, 1.56, .64, 1); }
+input[type="range"]::-moz-range-thumb { transition: transform .18s cubic-bezier(.34, 1.56, .64, 1); }
+input[type="range"]:not(:disabled):hover { height: 5px; }
+input[type="range"]:not(:disabled):hover::-webkit-slider-thumb { transform: scale(1.45); }
+input[type="range"]:not(:disabled):hover::-moz-range-thumb { transform: scale(1.45); }
+
+/* Every button (and the logo) pops out a little on hover, with a slight springy overshoot. */
+:root :is(button, .wordmark, .spotify-link) {
+  transition: transform .18s cubic-bezier(.34, 1.56, .64, 1), background .2s ease, border-color .2s ease, color .2s ease, opacity .2s ease;
+}
+:root :is(button, .wordmark, .spotify-link):not(:disabled):hover { transform: scale(1.06); }
+:root :is(button, .wordmark, .spotify-link):not(:disabled):active { transform: scale(.97); }
+
+@keyframes arrive { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+@media (min-width: 1500px) {
+  .story { left: 14vw; }
+  .player { min-height: 130px; }
+}
+
+@media (max-width: 800px) {
+  .story { left: 8vw; width: 75vw; }
+  .story h1 { font-size: clamp(52px, 10vw, 78px); }
+  .player { grid-template-columns: minmax(0, 1fr); gap: 12px; }
+  .track-info { max-width: calc(100% - 150px); }
+  .player-end { grid-column: 1 / -1; position: absolute; top: 18px; right: 0; bottom: auto; }
+  .transport { grid-column: 1 / -1; grid-row: 2; width: min(100%, 420px); justify-self: center; margin-bottom: 26px; }
+  .player { min-height: 148px; }
+  .track-info { align-self: start; margin-top: 18px; }
+  .device-indicator { display: none; }
+  .toast { bottom: 158px; }
+}
+
+@media (max-width: 520px) {
+  .topbar { height: 70px; padding: 0 22px; }
+  .topbar-right { gap: 12px; }
+  .connection-pill { font-size: 9px; }
+  .settings-button { width: 32px; height: 32px; }
+  .story { top: 47%; left: 26px; width: calc(100vw - 100px); transform: translateY(-58%); }
+  .story h1 { margin-top: 19px; font-size: clamp(49px, 13vw, 68px); }
+  .story-copy { max-width: 270px; font-size: 11px; }
+  .desktop-break { display: none; }
+  .brightness { right: 20px; width: 32px; height: 170px; --slider-length: 140px; }
+  .player { right: 20px; left: 20px; min-height: 146px; }
+  .track-info { max-width: calc(100% - 132px); gap: 10px; }
+  .cover-wrap { width: 41px; height: 41px; flex-basis: 41px; }
+  .track-name { max-width: 155px; font-size: 10px; }
+  .track-artist { max-width: 155px; font-size: 9px; }
+  .spotify-link { display: none; }
+  .transport { margin-bottom: 27px; }
+  .control-row { gap: 20px; }
+  .timeline { gap: 7px; }
+  .player-end .connect-button { padding: 8px 12px; }
+  .player-end { top: 18px; }
+  .settings-dialog { padding: 30px 23px 24px; }
+  .redirect-label span { max-width: 125px; text-align: right; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+}

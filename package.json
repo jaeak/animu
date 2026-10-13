@@ -1,0 +1,1 @@
+{"name":"animu","private":true,"scripts":{"start":"node server.js"},"dependencies":{"kuromoji":"^0.1.2","wanakana":"^5.3.1"}}
