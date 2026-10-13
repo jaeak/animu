@@ -1,6 +1,6 @@
-# animu
+# Animu
 
-animu is a small, static web app that connects to Spotify, controls the account's current playback, and looks up a matching looping anime opening from the AnimeThemes catalog.
+Animu is a small, static web app that connects to Spotify, controls the account's current playback, and looks up a matching looping anime opening from the AnimeThemes catalog.
 
 ## Run locally
 
@@ -19,7 +19,7 @@ Open `http://127.0.0.1:8000/` in your browser. Spotify does not allow `localhost
 3. Paste the Spotify app's client ID into animu, then choose **Save & connect** and approve access.
 4. Start listening on Spotify. animu follows the active track and device; playback controls act on that Spotify session.
 
-animu uses Spotify's Authorization Code with PKCE flow and does not need a client secret. The client ID is stored in local storage; the short-lived sign-in refresh token is kept in session storage. Spotify account access and playback control are subject to Spotify's current API and account requirements.
+Animu uses Spotify's Authorization Code with PKCE flow and does not need a client secret. The client ID is stored in local storage; the short-lived sign-in refresh token is kept in session storage. Spotify account access and playback control are subject to Spotify's current API and account requirements.
 
 ## Anime visuals
 
