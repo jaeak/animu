@@ -11,4 +11,12 @@ if (-not (Test-Server)) {
   for ($i = 0; $i -lt 50 -and -not (Test-Server); $i++) { Start-Sleep -Milliseconds 200 }
 }
 
-Start-Process $chrome "--app=$url"
+# Prefer the installed Chrome app: it gets a sharp taskbar icon from manifest.json,
+# while a plain --app window only gets a stretched 16px favicon.
+$installed = Get-ChildItem "$env:APPDATA\Microsoft\Windows\Start Menu\Programs\Chrome Apps\Animu*.lnk" -ErrorAction SilentlyContinue | Select-Object -First 1
+if ($installed) {
+  $shortcut = (New-Object -ComObject WScript.Shell).CreateShortcut($installed.FullName)
+  Start-Process $shortcut.TargetPath $shortcut.Arguments
+} else {
+  Start-Process $chrome "--app=$url"
+}

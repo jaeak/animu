@@ -1,4 +1,5 @@
 {
+  "id": "/",
   "name": "Animu",
   "short_name": "Animu",
   "start_url": "/",
@@ -6,7 +7,7 @@
   "background_color": "#11100f",
   "theme_color": "#11100f",
   "icons": [
-    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
-    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png" }
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" }
   ]
 }
