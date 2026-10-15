@@ -60,13 +60,25 @@ function notify(message, duration = 5000) {
   toastTimer = setTimeout(() => elements.toast.classList.remove("visible"), duration);
 }
 
+// Right after connecting, the pill only says "connected" once the first song's animation (or cover) is on screen.
+let firstVisualReady = false;
+let firstVisualTimer = null;
+
 function setConnected(connected, label = connected ? "Spotify connected" : "Spotify not connected") {
-  elements.connectionPill.classList.toggle("connected", connected);
-  elements.connectionLabel.textContent = label;
+  const loading = connected && !firstVisualReady;
+  elements.connectionPill.classList.toggle("connected", connected && !loading);
+  elements.connectionLabel.textContent = loading ? "Loading animation…" : label;
   elements.connectButton.textContent = connected ? "Disconnect" : "Connect Spotify";
   if (connected) {
     elements.connectButton.insertAdjacentHTML("beforeend", ' <span aria-hidden="true">↗</span>');
   }
+}
+
+function markFirstVisualReady() {
+  if (firstVisualReady) return;
+  firstVisualReady = true;
+  clearTimeout(firstVisualTimer);
+  if (refreshToken) setConnected(true);
 }
 
 function setPlaybackDevice(name, available) {
@@ -120,6 +132,9 @@ const videoLayers = [elements.openingVideo];
 while (videoLayers.length < 3) {
   const layer = elements.openingVideo.cloneNode(false);
   layer.removeAttribute("id");
+  // A clone copies the muted attribute but not the muted state, and unmuted videos can't autoplay until the
+  // page is clicked, which left the first animation black until play/pause was toggled.
+  layer.muted = true;
   videoLayers[videoLayers.length - 1].after(layer);
   videoLayers.push(layer);
 }
@@ -217,6 +232,7 @@ function revealVideo(video) {
   if (video.currentTime > 0) video.currentTime = 0;
   for (const layer of videoLayers) layer.style.zIndex = layer === video ? "0" : "-1";
   video.classList.add("visible");
+  markFirstVisualReady();
   hideCover();
   playOpeningVideo();
   if (previous === video) return;
@@ -291,10 +307,12 @@ function showCover(track) {
   if (!url) {
     hideVideo();
     cover.classList.remove("visible");
+    markFirstVisualReady();
     return;
   }
   const reveal = () => {
     if (token !== coverToken) return;
+    markFirstVisualReady();
     cover.style.zIndex = "1";
     cover.classList.add("visible");
     // Fade the cover in over the animation, then stop the animation underneath.
@@ -316,6 +334,7 @@ function showCover(track) {
       return;
     }
     hideVideo();
+    markFirstVisualReady();
   };
   cover.src = url;
 }
@@ -1139,6 +1158,7 @@ async function matchTrack(track, attempt = 0) {
   if (!track) {
     hideVideo();
     hideCover();
+    markFirstVisualReady();
     return;
   }
   try {
@@ -1286,6 +1306,7 @@ function setTrack(track) {
 function updatePlayback(data) {
   if (!data) return;
   if (!data.item || data.currently_playing_type !== "track") {
+    markFirstVisualReady();
     if (data.device) setPlaybackDevice(data.device.name, true);
     return;
   }
@@ -1406,6 +1427,9 @@ async function pollPlayback() {
 function startPolling() {
   clearInterval(pollTimer);
   clearInterval(clockTimer);
+  // Never leave the pill stuck on "Loading animation…" if the video host is slow.
+  clearTimeout(firstVisualTimer);
+  if (!firstVisualReady) firstVisualTimer = setTimeout(markFirstVisualReady, 15000);
   setConnected(true);
   pollPlayback();
   pollTimer = setInterval(pollPlayback, 1000);
@@ -1423,6 +1447,8 @@ function disconnectSpotify() {
   clearTimeout(trackEndTimer);
   clearTimeout(trackEndingSoonTimer);
   playback = null;
+  firstVisualReady = false;
+  clearTimeout(firstVisualTimer);
   setConnected(false);
   setPlaybackDevice("", false);
   setTrack(null);
