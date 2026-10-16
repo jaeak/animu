@@ -293,6 +293,39 @@ input[type="range"]::-moz-range-thumb {
   grid-template-columns: minmax(220px, 1fr) minmax(290px, 1.18fr) minmax(220px, 1fr);
   align-items: center;
   gap: 25px;
+  transition: opacity .2s ease;
+}
+
+/* Held back right after connecting until the first animation is ready, then fades in with it. */
+.stage.settling .player { opacity: 0; pointer-events: none; }
+
+/* Stands in for the player while it's held back. */
+.loading-dots {
+  z-index: 2;
+  position: absolute;
+  bottom: 54px;
+  left: 50%;
+  display: flex;
+  gap: 8px;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(-50%);
+  transition: opacity .2s ease;
+}
+.stage.settling .loading-dots { opacity: 1; }
+.loading-dots span {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(255, 250, 246, .9);
+}
+/* Only animate while shown, so it isn't repainting behind the animations the rest of the time. */
+.stage.settling .loading-dots span { animation: loading-dot 1.2s ease-in-out infinite; }
+.loading-dots span:nth-child(2) { animation-delay: .15s; }
+.loading-dots span:nth-child(3) { animation-delay: .3s; }
+@keyframes loading-dot {
+  0%, 60%, 100% { opacity: .3; transform: translateY(0); }
+  30% { opacity: 1; transform: translateY(-4px); }
 }
 
 .track-info { display: flex; min-width: 0; align-items: center; gap: 13px; }

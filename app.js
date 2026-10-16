@@ -60,12 +60,14 @@ function notify(message, duration = 5000) {
   toastTimer = setTimeout(() => elements.toast.classList.remove("visible"), duration);
 }
 
-// Right after connecting, the pill only says "connected" once the first song's animation (or cover) is on screen.
+// Right after connecting, the pill only says "connected" and the player only appears once the first song's
+// animation (or cover) is on screen, so everything shows up together.
 let firstVisualReady = false;
 let firstVisualTimer = null;
 
 function setConnected(connected, label = connected ? "Spotify connected" : "Spotify not connected") {
   const loading = connected && !firstVisualReady;
+  elements.stage.classList.toggle("settling", loading);
   elements.connectionPill.classList.toggle("connected", connected && !loading);
   elements.connectionLabel.textContent = loading ? "Loading animation…" : label;
   elements.connectButton.textContent = connected ? "Disconnect" : "Connect Spotify";
@@ -1162,8 +1164,9 @@ async function matchTrack(track, attempt = 0) {
     return;
   }
   try {
-    // When skipping quickly, don't spend lookups on songs that are skipped past straight away.
-    if (!isVisualKnown(track) && !attempt) {
+    // When skipping quickly, don't spend lookups on songs that are skipped past straight away
+    // (not for the song playing when you connect: nothing's being skipped yet).
+    if (!isVisualKnown(track) && !attempt && firstVisualReady) {
       await new Promise(resolve => setTimeout(resolve, 350));
       if (requestId !== matchRequestId) return;
     }
@@ -1304,7 +1307,10 @@ function setTrack(track) {
 }
 
 function updatePlayback(data) {
-  if (!data) return;
+  if (!data) {
+    markFirstVisualReady();
+    return;
+  }
   if (!data.item || data.currently_playing_type !== "track") {
     markFirstVisualReady();
     if (data.device) setPlaybackDevice(data.device.name, true);
@@ -1413,6 +1419,7 @@ async function pollPlayback() {
     }
   } catch (error) {
     console.error("Spotify playback update failed:", error);
+    markFirstVisualReady();
     if (/expired|reconnect/i.test(error.message)) {
       setConnected(false);
       notify(error.message);
@@ -1429,7 +1436,7 @@ function startPolling() {
   clearInterval(clockTimer);
   // Never leave the pill stuck on "Loading animation…" if the video host is slow.
   clearTimeout(firstVisualTimer);
-  if (!firstVisualReady) firstVisualTimer = setTimeout(markFirstVisualReady, 15000);
+  if (!firstVisualReady) firstVisualTimer = setTimeout(markFirstVisualReady, 8000);
   setConnected(true);
   pollPlayback();
   pollTimer = setInterval(pollPlayback, 1000);
