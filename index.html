@@ -14,7 +14,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Manrope:wght@400;500;600;700;800&family=Nunito:wght@800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css?v=30">
+    <link rel="stylesheet" href="styles.css?v=31">
   </head>
   <body>
     <main class="stage" id="stage">
@@ -39,12 +39,15 @@
             <span class="connection-dot"></span>
             <span id="connection-label">Spotify not connected</span>
           </div>
-          <button class="icon-button settings-button fullscreen-button" id="fullscreen-button" aria-label="Full screen (F)" title="Full screen (F)">
-            <svg class="enter-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5"></path></svg>
-            <svg class="exit-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4v5H4M20 9h-5V4M15 20v-5h5M4 15h5v5"></path></svg>
+          <button class="icon-button settings-button" id="apps-button" aria-label="Apps" title="Apps">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="6.5" height="6.5" rx="1.2"></rect><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.2"></rect><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.2"></rect><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.2"></rect></svg>
           </button>
           <button class="icon-button settings-button" id="settings-button" aria-label="Spotify settings" title="Spotify settings">
             <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"></circle><path d="m19.4 15 .1.1a1.7 1.7 0 0 1-2.4 2.4l-.1-.1a1.7 1.7 0 0 0-2.9 1.2v.2a1.7 1.7 0 0 1-3.4 0v-.2a1.7 1.7 0 0 0-2.9-1.2l-.1.1a1.7 1.7 0 0 1-2.4-2.4l.1-.1a1.7 1.7 0 0 0-1.2-2.9H4a1.7 1.7 0 0 1 0-3.4h.2a1.7 1.7 0 0 0 1.2-2.9l-.1-.1a1.7 1.7 0 0 1 2.4-2.4l.1.1a1.7 1.7 0 0 0 2.9-1.2V2a1.7 1.7 0 0 1 3.4 0v.2a1.7 1.7 0 0 0 2.9 1.2l.1-.1a1.7 1.7 0 0 1 2.4 2.4l-.1.1a1.7 1.7 0 0 0 1.2 2.9h.2a1.7 1.7 0 0 1 0 3.4h-.2a1.7 1.7 0 0 0-1.2 2.9Z"></path></svg>
+          </button>
+          <button class="icon-button settings-button fullscreen-button" id="fullscreen-button" aria-label="Full screen (F)" title="Full screen (F)">
+            <svg class="enter-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5"></path></svg>
+            <svg class="exit-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4v5H4M20 9h-5V4M15 20v-5h5M4 15h5v5"></path></svg>
           </button>
         </div>
       </header>
@@ -147,6 +150,11 @@
       <p class="dialog-note">The first time a song's animation is shown it can take a couple of seconds to load; after that it's instant. Keep the server window open while you use the app.</p>
       <p class="dialog-note legal-note">Animu isn't affiliated with or endorsed by Spotify or AnimeThemes. Music and track details come from Spotify, and Spotify is a trademark of Spotify AB. Videos are streamed from <a href="https://animethemes.moe" target="_blank" rel="noreferrer">AnimeThemes.moe</a>. All anime openings, music and artwork belong to their respective copyright holders. For personal, non-commercial use only.</p>
     </dialog>
-    <script src="app.js?v=30"></script>
+    <dialog class="settings-dialog apps-dialog" id="apps-dialog">
+      <form method="dialog">
+        <button class="dialog-close icon-button" aria-label="Close apps">×</button>
+      </form>
+    </dialog>
+    <script src="app.js?v=31"></script>
   </body>
 </html>

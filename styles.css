@@ -218,8 +218,8 @@ button { color: inherit; }
   letter-spacing: .1em;
 }
 
-/* A column as wide as the settings button and lined up with the top bar and player's right edge,
-   so the slider sits directly under the settings button. */
+/* A column as wide as the top-bar buttons and lined up with the top bar and player's right edge,
+   so the slider sits directly under the rightmost (full screen) button. */
 .brightness {
   z-index: 2;
   position: absolute;
@@ -477,6 +477,8 @@ input[type="range"]::-moz-range-thumb {
 .secondary-button, .primary-button { min-height: 38px; padding: 0 13px; font-size: 10px; }
 
 .help-dialog > p:not(.dialog-note) { margin-bottom: 16px; }
+/* Placeholder: the apps box is empty for now, so give it some body. */
+.apps-dialog { min-height: 320px; }
 .legal-note { font-style: italic; }
 .help-steps { display: grid; gap: 10px; margin: 0 0 6px; padding-left: 18px; color: rgba(255, 255, 255, .9); font-size: 11px; line-height: 1.65; }
 .help-steps li::marker { color: rgba(255, 255, 255, .6); font-weight: 700; }

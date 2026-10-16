@@ -19,7 +19,7 @@ const elements = Object.fromEntries([
   "seek-slider", "elapsed-time", "duration-time", "device-label", "device-indicator",
   "connect-button", "settings-button", "settings-dialog", "client-id-input",
   "redirect-uri", "copy-redirect", "save-and-connect", "toast", "wordmark", "help-dialog",
-  "fullscreen-button"
+  "fullscreen-button", "apps-button", "apps-dialog"
 ].map(id => [id.replace(/-([a-z])/g, (_, letter) => letter.toUpperCase()), document.getElementById(id)]));
 
 let clientId = localStorage.getItem(CLIENT_ID_KEY) || "";
@@ -1578,7 +1578,7 @@ function openDialog(dialog, trigger) {
 
 // Clicking the dimmed area outside a box closes it. A press that starts inside the
 // box (e.g. selecting text in the client ID field) and ends outside doesn't count.
-for (const dialog of [elements.settingsDialog, elements.helpDialog]) {
+for (const dialog of [elements.settingsDialog, elements.helpDialog, elements.appsDialog]) {
   let pressedOutside = false;
   const isOutside = event => {
     const box = dialog.getBoundingClientRect();
@@ -1592,6 +1592,7 @@ for (const dialog of [elements.settingsDialog, elements.helpDialog]) {
 }
 
 elements.settingsButton.addEventListener("click", () => openDialog(elements.settingsDialog, elements.settingsButton));
+elements.appsButton.addEventListener("click", () => openDialog(elements.appsDialog, elements.appsButton));
 elements.wordmark.addEventListener("click", event => {
   event.preventDefault();
   openDialog(elements.helpDialog, elements.wordmark);
