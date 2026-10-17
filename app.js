@@ -19,7 +19,8 @@ const elements = Object.fromEntries([
   "seek-slider", "elapsed-time", "duration-time", "device-label", "device-indicator",
   "connect-button", "settings-button", "settings-dialog", "client-id-input",
   "redirect-uri", "copy-redirect", "save-and-connect", "toast", "wordmark", "help-dialog",
-  "fullscreen-button", "apps-button", "apps-dialog"
+  "fullscreen-button", "apps-button", "apps-dialog", "timer-pill", "timer-fields", "timer-hours",
+  "timer-minutes", "timer-seconds", "timer-readout", "timer-presets", "timer-reset", "timer-start"
 ].map(id => [id.replace(/-([a-z])/g, (_, letter) => letter.toUpperCase()), document.getElementById(id)]));
 
 let clientId = localStorage.getItem(CLIENT_ID_KEY) || "";
@@ -1600,6 +1601,108 @@ for (const dialog of [elements.settingsDialog, elements.helpDialog, elements.app
 
 elements.settingsButton.addEventListener("click", () => openDialog(elements.settingsDialog, elements.settingsButton));
 elements.appsButton.addEventListener("click", () => openDialog(elements.appsDialog, elements.appsButton));
+elements.timerPill.addEventListener("click", () => openDialog(elements.appsDialog, elements.timerPill));
+
+// Timer app: counts down from a custom time, shows what's left in the top bar and chimes when it's up.
+// While running only the end time is kept (so it stays accurate if the tab is throttled); while paused, the time left.
+let timerEndsAt = 0;
+let timerPausedLeft = 0;
+let timerTick = null;
+
+const timerLeft = () => timerEndsAt ? Math.max(0, timerEndsAt - Date.now()) : timerPausedLeft;
+
+function formatCountdown(ms) {
+  const total = Math.ceil(ms / 1000);
+  const hours = Math.floor(total / 3600);
+  const minutes = Math.floor(total / 60) % 60;
+  const seconds = String(total % 60).padStart(2, "0");
+  return hours ? `${hours}:${String(minutes).padStart(2, "0")}:${seconds}` : `${minutes}:${seconds}`;
+}
+
+function renderTimer() {
+  const left = timerLeft();
+  if (timerEndsAt && !left) return finishTimer();
+  const active = Boolean(timerEndsAt || timerPausedLeft);
+  const paused = !timerEndsAt && active;
+  elements.timerPill.hidden = !active;
+  elements.timerPill.textContent = `⏱ ${formatCountdown(left)}`;
+  elements.timerPill.classList.toggle("paused", paused);
+  elements.timerReadout.textContent = formatCountdown(left);
+  elements.timerReadout.classList.toggle("paused", paused);
+  elements.timerReadout.hidden = !active;
+  elements.timerFields.hidden = active;
+  elements.timerPresets.hidden = active;
+  elements.timerReset.hidden = !active;
+  elements.timerStart.textContent = timerEndsAt ? "Pause" : paused ? "Resume" : "Start";
+}
+
+function startTimer(ms) {
+  if (!ms) return notify("Set a time for the timer first.");
+  timerEndsAt = Date.now() + ms;
+  timerPausedLeft = 0;
+  clearInterval(timerTick);
+  timerTick = setInterval(renderTimer, 250);
+  renderTimer();
+}
+
+function stopTimer() {
+  clearInterval(timerTick);
+  timerEndsAt = 0;
+  timerPausedLeft = 0;
+  renderTimer();
+}
+
+function finishTimer() {
+  stopTimer();
+  playChime();
+  notify("Time's up!", 10000);
+}
+
+// Three soft rising notes (the video is muted and Spotify plays elsewhere, so this is the only sound the page makes).
+function playChime() {
+  try {
+    const audio = new AudioContext();
+    [880, 1175, 1568].forEach((frequency, index) => {
+      const start = audio.currentTime + index * .32;
+      const tone = audio.createOscillator();
+      const gain = audio.createGain();
+      tone.frequency.value = frequency;
+      gain.gain.setValueAtTime(0, start);
+      gain.gain.linearRampToValueAtTime(.25, start + .02);
+      gain.gain.exponentialRampToValueAtTime(.001, start + 1.2);
+      tone.connect(gain).connect(audio.destination);
+      tone.start(start);
+      tone.stop(start + 1.2);
+    });
+    setTimeout(() => audio.close(), 2500);
+  } catch (error) {
+    console.error("Could not play the timer chime:", error);
+  }
+}
+
+elements.timerStart.addEventListener("click", () => {
+  if (timerEndsAt) {
+    timerPausedLeft = timerLeft();
+    timerEndsAt = 0;
+    clearInterval(timerTick);
+    return renderTimer();
+  }
+  if (timerPausedLeft) return startTimer(timerPausedLeft);
+  const field = input => Math.max(0, Math.floor(Number(input.value) || 0));
+  startTimer(((field(elements.timerHours) * 60 + field(elements.timerMinutes)) * 60 + field(elements.timerSeconds)) * 1000);
+});
+elements.timerReset.addEventListener("click", stopTimer);
+elements.timerPresets.addEventListener("click", event => {
+  const minutes = Number(event.target.closest("[data-minutes]")?.dataset.minutes);
+  if (!minutes) return;
+  elements.timerHours.value = Math.floor(minutes / 60) || "";
+  elements.timerMinutes.value = minutes % 60 || "";
+  elements.timerSeconds.value = "";
+  startTimer(minutes * 60000);
+});
+elements.timerFields.addEventListener("keydown", event => {
+  if (event.key === "Enter") elements.timerStart.click();
+});
 elements.wordmark.addEventListener("click", event => {
   event.preventDefault();
   openDialog(elements.helpDialog, elements.wordmark);

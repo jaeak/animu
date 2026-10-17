@@ -14,7 +14,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Manrope:wght@400;500;600;700;800&family=Nunito:wght@800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css?v=34">
+    <link rel="stylesheet" href="styles.css?v=35">
   </head>
   <body>
     <main class="stage" id="stage">
@@ -39,6 +39,7 @@
             <span class="connection-dot"></span>
             <span id="connection-label">Spotify not connected</span>
           </div>
+          <button class="timer-pill" id="timer-pill" aria-label="Timer" title="Timer" hidden></button>
           <button class="icon-button settings-button" id="apps-button" aria-label="Apps" title="Apps">
             <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="6.5" height="6.5" rx="1.2"></rect><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.2"></rect><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.2"></rect><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.2"></rect></svg>
           </button>
@@ -156,7 +157,26 @@
       <form method="dialog">
         <button class="dialog-close icon-button" aria-label="Close apps">×</button>
       </form>
+      <div class="dialog-eyebrow">APPS</div>
+      <h2>Timer</h2>
+      <p>Set a countdown. It keeps running in the top bar while you listen, and chimes when time's up.</p>
+      <div class="timer-fields" id="timer-fields">
+        <label class="timer-field"><input class="text-input" id="timer-hours" type="number" min="0" max="99" placeholder="0" inputmode="numeric" aria-label="Hours"><span>h</span></label>
+        <label class="timer-field"><input class="text-input" id="timer-minutes" type="number" min="0" max="59" placeholder="0" inputmode="numeric" aria-label="Minutes"><span>m</span></label>
+        <label class="timer-field"><input class="text-input" id="timer-seconds" type="number" min="0" max="59" placeholder="0" inputmode="numeric" aria-label="Seconds"><span>s</span></label>
+      </div>
+      <div class="timer-readout" id="timer-readout" hidden>0:00</div>
+      <div class="timer-presets" id="timer-presets">
+        <button class="secondary-button" type="button" data-minutes="5">5 min</button>
+        <button class="secondary-button" type="button" data-minutes="10">10 min</button>
+        <button class="secondary-button" type="button" data-minutes="25">25 min</button>
+        <button class="secondary-button" type="button" data-minutes="60">1 hour</button>
+      </div>
+      <div class="dialog-actions">
+        <button class="secondary-button" id="timer-reset" type="button" hidden>Reset</button>
+        <button class="primary-button" id="timer-start" type="button">Start</button>
+      </div>
     </dialog>
-    <script src="app.js?v=33"></script>
+    <script src="app.js?v=34"></script>
   </body>
 </html>

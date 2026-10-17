@@ -510,8 +510,31 @@ input[type="range"]::-moz-range-thumb {
 .secondary-button, .primary-button { min-height: 38px; padding: 0 13px; font-size: 10px; }
 
 .help-dialog > p:not(.dialog-note) { margin-bottom: 16px; }
-/* Placeholder: the apps box is empty for now, so give it some body. */
-.apps-dialog { min-height: 320px; }
+.timer-fields { display: flex; gap: 8px; margin-bottom: 12px; }
+.timer-field { position: relative; flex: 1; }
+.timer-field .text-input { height: 52px; padding-right: 26px; font-family: Manrope, sans-serif; font-size: 20px; font-variant-numeric: tabular-nums; text-align: center; -moz-appearance: textfield; appearance: textfield; }
+.timer-field .text-input::-webkit-inner-spin-button, .timer-field .text-input::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+.timer-field span { position: absolute; top: 50%; right: 11px; color: rgba(255, 255, 255, .6); font-size: 10px; transform: translateY(-50%); pointer-events: none; }
+.timer-readout { margin: 4px 0 12px; font-family: Manrope, sans-serif; font-size: 44px; font-weight: 500; font-variant-numeric: tabular-nums; letter-spacing: -.03em; text-align: center; }
+.timer-readout.paused { color: rgba(255, 255, 255, .55); }
+.timer-presets { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 22px; }
+.timer-presets .secondary-button { min-height: 32px; padding: 0 6px; }
+/* Countdown in the top bar while a timer runs; a glass pill like the Connect button. */
+.timer-pill {
+  padding: 8px 13px;
+  border: 1px solid rgba(255, 255, 255, .18);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, .07);
+  backdrop-filter: blur(14px) saturate(1.2);
+  -webkit-backdrop-filter: blur(14px) saturate(1.2);
+  color: rgba(255, 250, 246, .85);
+  cursor: pointer;
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+}
+.timer-pill:hover { border-color: rgba(255, 255, 255, .3); background: rgba(255, 255, 255, .14); }
+.timer-pill.paused { color: rgba(255, 250, 246, .5); }
+.timer-pill[hidden], .timer-fields[hidden], .timer-presets[hidden] { display: none; }
 .legal-note { font-style: italic; }
 .help-steps { display: grid; gap: 10px; margin: 0 0 6px; padding-left: 18px; color: rgba(255, 255, 255, .9); font-size: 11px; line-height: 1.65; }
 .help-steps li::marker { color: rgba(255, 255, 255, .6); font-weight: 700; }
