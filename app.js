@@ -20,7 +20,8 @@ const elements = Object.fromEntries([
   "connect-button", "settings-button", "settings-dialog", "client-id-input",
   "redirect-uri", "copy-redirect", "save-and-connect", "toast", "wordmark", "help-dialog",
   "fullscreen-button", "apps-button", "apps-dialog", "timer-pill", "timer-fields", "timer-hours",
-  "timer-minutes", "timer-seconds", "timer-readout", "timer-presets", "timer-reset", "timer-start"
+  "timer-minutes", "timer-seconds", "timer-readout", "timer-presets", "timer-reset", "timer-start",
+  "timer-done-dialog", "timer-done-note", "timer-restart"
 ].map(id => [id.replace(/-([a-z])/g, (_, letter) => letter.toUpperCase()), document.getElementById(id)]));
 
 let clientId = localStorage.getItem(CLIENT_ID_KEY) || "";
@@ -1586,7 +1587,7 @@ function openDialog(dialog, trigger) {
 
 // Clicking the dimmed area outside a box closes it. A press that starts inside the
 // box (e.g. selecting text in the client ID field) and ends outside doesn't count.
-for (const dialog of [elements.settingsDialog, elements.helpDialog, elements.appsDialog]) {
+for (const dialog of [elements.settingsDialog, elements.helpDialog, elements.appsDialog, elements.timerDoneDialog]) {
   let pressedOutside = false;
   const isOutside = event => {
     const box = dialog.getBoundingClientRect();
@@ -1607,6 +1608,7 @@ elements.timerPill.addEventListener("click", () => openDialog(elements.appsDialo
 // While running only the end time is kept (so it stays accurate if the tab is throttled); while paused, the time left.
 let timerEndsAt = 0;
 let timerPausedLeft = 0;
+let timerDuration = 0;
 let timerTick = null;
 
 const timerLeft = () => timerEndsAt ? Math.max(0, timerEndsAt - Date.now()) : timerPausedLeft;
@@ -1638,6 +1640,7 @@ function renderTimer() {
 
 function startTimer(ms) {
   if (!ms) return notify("Set a time for the timer first.");
+  if (!timerPausedLeft) timerDuration = ms;
   timerEndsAt = Date.now() + ms;
   timerPausedLeft = 0;
   clearInterval(timerTick);
@@ -1655,8 +1658,15 @@ function stopTimer() {
 function finishTimer() {
   stopTimer();
   playChime();
-  notify("Time's up!", 10000);
+  elements.timerDoneNote.textContent = `Your ${formatCountdown(timerDuration)} timer has finished.`;
+  elements.appsDialog.close();
+  if (!elements.timerDoneDialog.open) openDialog(elements.timerDoneDialog);
 }
+
+elements.timerRestart.addEventListener("click", () => {
+  elements.timerDoneDialog.close();
+  startTimer(timerDuration);
+});
 
 // Three soft rising notes (the video is muted and Spotify plays elsewhere, so this is the only sound the page makes).
 function playChime() {
