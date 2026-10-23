@@ -545,7 +545,7 @@ input[type="range"]::-moz-range-thumb {
 .timer-done-dialog h2 { margin: 0 0 8px; font-size: 52px; font-weight: 600; letter-spacing: -.04em; line-height: 1; }
 .timer-done-dialog > p { margin-bottom: 28px; font-size: 13px; }
 .timer-done-dialog .dialog-actions { justify-content: center; }
-.timer-done-dialog .dialog-actions button { min-width: 110px; min-height: 42px; font-size: 12px; }
+.timer-done-dialog .dialog-actions button { min-width: 96px; min-height: 42px; font-size: 12px; }
 .timer-pill[hidden], .timer-fields[hidden], .timer-presets[hidden] { display: none; }
 .legal-note { font-style: italic; }
 .help-steps { display: grid; gap: 10px; margin: 0 0 6px; padding-left: 18px; color: rgba(255, 255, 255, .9); font-size: 11px; line-height: 1.65; }

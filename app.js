@@ -21,7 +21,7 @@ const elements = Object.fromEntries([
   "redirect-uri", "copy-redirect", "save-and-connect", "toast", "wordmark", "help-dialog",
   "fullscreen-button", "apps-button", "apps-dialog", "timer-pill", "timer-fields", "timer-hours",
   "timer-minutes", "timer-seconds", "timer-readout", "timer-presets", "timer-reset", "timer-start",
-  "timer-done-dialog", "timer-done-note", "timer-restart"
+  "timer-done-dialog", "timer-done-note", "timer-restart", "timer-snooze"
 ].map(id => [id.replace(/-([a-z])/g, (_, letter) => letter.toUpperCase()), document.getElementById(id)]));
 
 let clientId = localStorage.getItem(CLIENT_ID_KEY) || "";
@@ -1659,6 +1659,7 @@ function finishTimer() {
   stopTimer();
   playChime();
   elements.timerDoneNote.textContent = `Your ${formatCountdown(timerDuration)} timer has finished.`;
+  elements.timerSnooze.hidden = timerDuration <= 10 * 60 * 1000;
   elements.appsDialog.close();
   if (!elements.timerDoneDialog.open) openDialog(elements.timerDoneDialog);
 }
@@ -1666,6 +1667,14 @@ function finishTimer() {
 elements.timerRestart.addEventListener("click", () => {
   elements.timerDoneDialog.close();
   startTimer(timerDuration);
+});
+
+// Snooze counts down 5 more minutes but keeps the original duration, so the note, Restart and Snooze still refer to it.
+elements.timerSnooze.addEventListener("click", () => {
+  const duration = timerDuration;
+  elements.timerDoneDialog.close();
+  startTimer(5 * 60 * 1000);
+  timerDuration = duration;
 });
 
 // Three soft rising notes (the video is muted and Spotify plays elsewhere, so this is the only sound the page makes),
