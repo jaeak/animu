@@ -1668,11 +1668,16 @@ elements.timerRestart.addEventListener("click", () => {
   startTimer(timerDuration);
 });
 
-// Three soft rising notes (the video is muted and Spotify plays elsewhere, so this is the only sound the page makes).
+// Three soft rising notes (the video is muted and Spotify plays elsewhere, so this is the only sound the page makes),
+// repeated until the "Time's up" box is dismissed in any way.
+let chimeAudio = null;
+let chimeRepeat = null;
+
 function playChime() {
+  stopChime();
   try {
-    const audio = new AudioContext();
-    [880, 1175, 1568].forEach((frequency, index) => {
+    const audio = chimeAudio = new AudioContext();
+    const ring = () => [880, 1175, 1568].forEach((frequency, index) => {
       const start = audio.currentTime + index * .32;
       const tone = audio.createOscillator();
       const gain = audio.createGain();
@@ -1684,11 +1689,20 @@ function playChime() {
       tone.start(start);
       tone.stop(start + 1.2);
     });
-    setTimeout(() => audio.close(), 2500);
+    ring();
+    chimeRepeat = setInterval(ring, 2200);
   } catch (error) {
     console.error("Could not play the timer chime:", error);
   }
 }
+
+function stopChime() {
+  clearInterval(chimeRepeat);
+  chimeAudio?.close();
+  chimeAudio = null;
+}
+
+elements.timerDoneDialog.addEventListener("close", stopChime);
 
 elements.timerStart.addEventListener("click", () => {
   if (timerEndsAt) {
